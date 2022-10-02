@@ -27,4 +27,9 @@ const eraseCourse = (courseDelete) => {
   return courseErase;
 };
 
-module.exports = { create, allCourses, getCourseId, eraseCourse };
+const courseUpdate = (courseId, courseBody, courseAfter) => {
+  const course = Course.findByIdAndUpdate(courseId, courseBody, courseAfter);
+  return course;
+};
+
+module.exports = { create, allCourses, getCourseId, eraseCourse, courseUpdate };

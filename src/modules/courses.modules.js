@@ -77,15 +77,19 @@ const courseSchema = new mongoose.Schema({
   },
   minuatureImage: {
     type: string,
+    require: true,
   },
   bannerImage: {
     type: string,
+    require: true,
   },
   courseDescription: {
     type: string,
+    require: true,
   },
   themeTag: {
     type: string,
+    require: true,
   },
 });
 

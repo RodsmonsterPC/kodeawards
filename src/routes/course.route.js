@@ -6,6 +6,7 @@ const {
   allCourses,
   getCourseId,
   eraseCourse,
+  courseUpdate,
 } = require("../useCase/courses.useCase");
 
 const router = express.Router();
@@ -51,4 +52,25 @@ router.post("/", async (request, response) => {
   }
 });
 
+router.put("/:id", async (request, response) => {
+  try {
+    const { params } = request;
+    const { body } = request;
+
+    const course = await update(params.id, body, { returnDocuemnt: "after" });
+    response.status(201);
+    response.json({
+      succes: true,
+      data: {
+        course,
+      },
+    });
+  } catch (error) {
+    response.status(400);
+    response.json({
+      succes: false,
+      message: error.message,
+    });
+  }
+});
 module.exports = router;

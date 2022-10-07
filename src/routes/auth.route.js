@@ -1,26 +1,15 @@
-const express = require("express");
+const {Router} = require('express');
+const { check } = require( 'express-validator');
+const { login } = require ('../useCase/auth.useCase');
+const { validateFields } = require('../middlewares/validateFields');
 
-const { login } = require("../useCase/auth.useCase");
+const router = Router();
 
-const router = express.Router();
+router.post('/login',[
+  check('email','Email is mandatory').isEmail(),
+  check('password','The password is emtpy').not().isEmpty(),
+  validateFields
+],login);
 
-router.post("/", async (request, response) => {
-  try {
-    const { body } = request;
-    const token = await login(body.email, body.password);
 
-    response.json({
-      success: true,
-      data: {
-        token,
-      },
-    });
-  } catch (error) {
-    response.status(error.status || 500);
-    response.json({
-      success: false,
-      message: error.message,
-    });
-  }
-});
 module.exports = router;

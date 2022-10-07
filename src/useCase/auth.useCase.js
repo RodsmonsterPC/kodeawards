@@ -1,24 +1,49 @@
-const User = require("../modules/user.modules");
+const { response, request, json } = require("express");
+const bcryptjs = require('bcryptjs');
+const User = require('../modules/user.modules');
+const { generateJWT } = require('../helpers/generateWebToken');
 
-const bcrypt = require("bcrypt");
 
-const createError = require("http-errors");
-const jwt = require("../lib/jwt.lib");
+const login = async( req, res = response ) => {
+  const { email, password } = req.body;
 
-const login = async (email, textplainPassword) => {
-  const user = await User.findOne({ email });
+  try{
+    const user = await User.findOne({email});
 
-  if (!user) throw createError(401, "No estas autorizado");
+    if(!user){
+      return res.status(400).json({
+        success: false,
+        msg: 'User/Password incorrect - user'
+      })
+    }
 
-  const isValidPassword = await bcrypt.compare(
-    textplainPassword,
-    user.password
-  );
+    const validPassword = bcryptjs.compareSync( password, user.password);
+    if( !validPassword ){
+      return res.status(400).json({
+        success: false,
+        msg: 'User/Password incorrect - password'
+      })
+    }
 
-  if (!isValidPassword) throw createError(401, "No estas autorizado");
+    const token = await generateJWT(user.id);
 
-  const token = jwt.sign({ id: user._id });
-  return token;
-};
 
-module.exports = { login };
+    // watch out
+    return res.json({
+      success: true,
+      user,
+      token
+    })
+
+  }
+  catch(error){
+    return res.status(500).json({
+      status: false,
+      msg: 'INTERNAL ERROR: Reach out the administrator'
+    });
+  }
+}
+
+module.exports = {
+  login
+}

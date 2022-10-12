@@ -75,7 +75,7 @@ const courseSchema = new mongoose.Schema({
   courseId: {
     type: String,
   },
-  minatureImage: {
+  minuatureImage: {
     type: String,
     require: true,
   },

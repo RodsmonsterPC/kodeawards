@@ -57,7 +57,9 @@ router.put("/:id", async (request, response) => {
     const { params } = request;
     const { body } = request;
 
-    const course = await update(params.id, body, { returnDocuemnt: "after" });
+    const course = await courseUpdate(params.id, body, {
+      returnDocuemnt: "after",
+    });
     response.status(201);
     response.json({
       succes: true,

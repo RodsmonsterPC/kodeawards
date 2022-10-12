@@ -6,7 +6,7 @@ const routerAuth = require("./routes/auth.route");
 
 const app = express();
 
-app.use(cores());
+app.use(cors());
 app.use(express.json());
 
 app.use("/course", routerCourse);

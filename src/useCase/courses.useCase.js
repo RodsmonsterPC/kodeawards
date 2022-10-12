@@ -17,7 +17,7 @@ const getCourseId = async (request, response) => {
   const { id } = request.params;
 
   const course = await Course.findById(id);
-  response.jsoon({
+  response.json({
     course,
   });
 };

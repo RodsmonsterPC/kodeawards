@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const courseSchema = new mongoose.Schema({
   title: {
-    type: string,
+    type: String,
     required: true,
   },
   author: {
-    type: string,
+    type: String,
     require: true,
   },
   stars: {
-    type: boolean,
+    type: Boolean,
     require: true,
   },
   categories: {
@@ -60,35 +60,35 @@ const courseSchema = new mongoose.Schema({
 
   units: {
     course: {
-      type: string,
+      type: String,
     },
     unitName: {
-      type: string,
+      type: String,
     },
     components: {
-      type: string,
+      type: String,
     },
     unitTest: {
-      type: string,
+      type: String,
     },
   },
   courseId: {
-    type: string,
+    type: String,
   },
-  minuatureImage: {
-    type: string,
+  minatureImage: {
+    type: String,
     require: true,
   },
   bannerImage: {
-    type: string,
+    type: String,
     require: true,
   },
   courseDescription: {
-    type: string,
+    type: String,
     require: true,
   },
   themeTag: {
-    type: string,
+    type: String,
     require: true,
   },
 });

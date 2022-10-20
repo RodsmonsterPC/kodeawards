@@ -1,5 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
+const auth = require("../middlewares/auth.middle");
 
 const {
   create,
@@ -15,7 +16,7 @@ router.get("/", allCourses);
 
 router.get("/:id", getCourseId);
 
-router.delete("/:id", async (request, response) => {
+router.delete("/:id", auth, async (request, response) => {
   const { params } = request;
   try {
     const course = await eraseCourse(params.id);
@@ -32,7 +33,7 @@ router.delete("/:id", async (request, response) => {
   }
 });
 
-router.post("/", async (request, response) => {
+router.post("/", auth, async (request, response) => {
   const { body, courseId } = request;
   try {
     const course = await create(body, courseId);
@@ -52,12 +53,14 @@ router.post("/", async (request, response) => {
   }
 });
 
-router.put("/:id", async (request, response) => {
+router.put("/:id", auth, async (request, response) => {
   try {
     const { params } = request;
     const { body } = request;
 
-    const course = await update(params.id, body, { returnDocuemnt: "after" });
+    const course = await courseUpdate(params.id, body, {
+      returnDocuemnt: "after",
+    });
     response.status(201);
     response.json({
       succes: true,

@@ -13,47 +13,7 @@ const courseSchema = new mongoose.Schema({
     type: Boolean,
     require: true,
   },
-  categories: {
-    content: {
-      subcategories: {
-        bad: {
-          type: Number,
-        },
-        enough: {
-          type: Number,
-        },
-        excellent: {
-          type: Number,
-        },
-      },
-    },
-  },
-  explanations: {
-    subcategories: {
-      bad: {
-        type: Number,
-      },
-      enough: {
-        type: Number,
-      },
-      excellent: {
-        type: Number,
-      },
-    },
-  },
-  knowledge: {
-    subcategories: {
-      bad: {
-        type: Number,
-      },
-      enough: {
-        type: Number,
-      },
-      excellent: {
-        type: Number,
-      },
-    },
-  },
+
   subscribeStudent: {
     type: Number,
   },

@@ -1,10 +1,13 @@
-
 const { Schema, model } = require('mongoose');
 
 const UserSchema = Schema({
     name: {
         type: String,
-        required: [true,'Error: NAME is mandatory']
+        required: [true,'Error: Name is mandatory']
+    },
+    familyName:{
+        type: String,
+        required: false
     },
     email:{
         type: String,
@@ -26,6 +29,15 @@ const UserSchema = Schema({
         type: Boolean,
         default: false
     },
+    coursesLearn:[{
+        type: String
+    }],
+    coursesTeach:[{
+        type: String
+    }],
+    preferenceTags:[{
+        type: String
+    }]
 });
 
 UserSchema.methods.toJSON = function(){

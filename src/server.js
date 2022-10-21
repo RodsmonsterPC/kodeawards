@@ -3,7 +3,7 @@ const cors = require("cors");
 
 const routerCourse = require("./routes/course.route");
 const routerAuth = require("./routes/auth.route");
-const routerUser = require("./routes/user.route")
+const routerUser = require("./routes/user.route");
 
 const app = express();
 

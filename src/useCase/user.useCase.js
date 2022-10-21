@@ -39,11 +39,24 @@ const updateUserById = (req, res = response ) =>{
     })
 }
 
+const getUserById = async(req, res = response) =>{
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    console.log(user);
+    res.json({
+        success: true,
+        msg: "User found",
+        user
+    })
+
+}
+
 const deleteUserById = async(req, res = response ) =>{
     const userAuth = req.user;
     const user = await User.findByIdAndDelete(userAuth.id);
 
     res.json({
+        success: true,
         msg: 'delete USER - CONTROLLER',
         user
     })
@@ -54,5 +67,6 @@ module.exports = {
     getAllUsers,
     createNewUser,
     updateUserById,
-    deleteUserById
+    deleteUserById,
+    getUserById
 }

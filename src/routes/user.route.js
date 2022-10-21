@@ -5,6 +5,7 @@ const { getAllUsers }       = require('../useCase/user.useCase');
 const { createNewUser }     = require('../useCase/user.useCase');
 const { updateUserById }    = require('../useCase/user.useCase'); 
 const { deleteUserById }    = require('../useCase/user.useCase');
+const { getUserById }       = require('../useCase/user.useCase');
 
 const { validateFields }  = require ('../middlewares/validateFields');
 const { validateJWT }     = require ('../middlewares/validateJWT');
@@ -25,6 +26,12 @@ router.post('/',[
     check('email').custom(emailExists),
     validateFields
 ],createNewUser)
+
+router.get('/:userId',[
+    check('userId','Id is not valid').isMongoId(),
+    check('userId').custom(userExistsById),
+    validateFields
+],getUserById)
 
 // Update User
 router.put('/:userId',[

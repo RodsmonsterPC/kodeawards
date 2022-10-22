@@ -1,26 +1,42 @@
-const express = require("express");
+const { Router } = require("express");
+const { check } = require("express-validator");
 
 const { login } = require("../useCase/auth.useCase");
+const { googleSignIn } = require("../useCase/auth.useCase");
 
-const router = express.Router();
+const { validateFields } = require("../middlewares/validateFields");
+const { validateJWT } = require("../middlewares/validateJWT");
+const { getUserById } = require("../useCase/user.useCase");
+const router = Router();
 
-router.post("/", async (request, response) => {
-  try {
-    const { body } = request;
-    const token = await login(body.email, body.password);
+router.post(
+  "/login",
+  [
+    check("email", "Email is invalid").isEmail(),
+    check("email", "Email is empty").not().isEmpty(),
+    check("password", "Password is emtpy").not().isEmpty(),
+    validateFields,
+  ],
+  login
+);
 
-    response.json({
-      success: true,
-      data: {
-        token,
-      },
-    });
-  } catch (error) {
-    response.status(error.status || 500);
-    response.json({
-      success: false,
-      message: error.message,
-    });
-  }
-});
+router.get(
+  "/user",
+  validateJWT,
+  (req, _, next) => {
+    req.params.userId = req.user._id;
+    next();
+  },
+  getUserById
+);
+
+router.post(
+  "/google",
+  [
+    check("id_token", "Google token is mandatory").not().isEmpty(),
+    validateFields,
+  ],
+  googleSignIn
+);
+
 module.exports = router;

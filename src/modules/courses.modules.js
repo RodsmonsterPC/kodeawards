@@ -58,20 +58,22 @@ const courseSchema = new mongoose.Schema({
     type: Number,
   },
 
-  units: {
-    course: {
-      type: String,
+  units: [
+    {
+      unitName: {
+        type: String,
+      },
+      components: [
+        {
+          type: String,
+        },
+      ],
+      unitTest: {
+        type: String,
+      },
     },
-    unitName: {
-      type: String,
-    },
-    components: {
-      type: String,
-    },
-    unitTest: {
-      type: String,
-    },
-  },
+  ],
+
   courseId: {
     type: String,
   },

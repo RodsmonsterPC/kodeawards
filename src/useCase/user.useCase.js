@@ -1,71 +1,69 @@
-const{ response, request } = require('express');
-const bcryptjs = require('bcryptjs');
-const User = require('../modules/user.modules');
+const { request, response } = require("express");
+const bcryptjs = require("bcryptjs");
+const User = require("../modules/user.modules");
 
-const usersGet = async (req,res) => {
-    const usuarios = await User.find();
-    res.json({
-        msg: 'get Api - modules',
-        usuarios
-    })
-}
+const getAllUsers = async (req, res = response) => {
+  const allUsers = await User.find();
+  res.json({
+    msg: "All users requested",
+    allUsers,
+  });
+};
 
-const usersPut = async(req,res) => {
-    const {userId} = req.params;
-    const { _id, password, google, ...reminderData } = req.body;
+const createNewUser = async (req, res = response) => {
+  const { google, id, name, email, password, preferenceTags } = req.body;
 
-    // TODO Validate if the id exsits in Data Base
-    if(password){
-        const salt = bcryptjs.genSaltSync(10);
-        reminderData.password = bcryptjs.hashSync(password,salt);
-    }
+  const user = User({ name, email });
 
-    const  user = await User.findByIdAndUpdate(userId, reminderData);
-
-    res.json({
-        msg: 'put Api - modules',
-        user
-    })
-}
-
-const usersPost = async (req,res) => {
-
-    const {name, email, password, role} = req.body;
-    const user = new User({name, email, password,role});
-
+  if (password) {
     const salt = bcryptjs.genSaltSync(10);
-    user.password = bcryptjs.hashSync(password,salt);
+    user.password = bcryptjs.hashSync(password, salt);
+  }
 
-    await user.save();
+  if (preferenceTags) {
+    user.preferenceTags = preferenceTags;
+  }
 
-    res.json({
-        msg: 'post Api - modules',
-        user
-    })
-}
+  await user.save();
 
-const usersDelete = async(req,res) => {
-    const {userId} = req.params;
+  res.json({
+    msg: "New user has been created",
+    user,
+  });
+};
 
-    const user = await User.findByIdAndDelete(userId);
+const updateUserById = (req, res = response) => {
+  res.json({
+    msg: "updateUserById - CONTROLLER",
+  });
+};
 
-    res.json({
-        msg: 'delete Api - modules'
-    })
-}
+const getUserById = async (req, res = response) => {
+  const userId = req.params.userId;
+  const user = await User.findById(userId);
+  console.log(user);
+  res.json({
+    success: true,
+    msg: "User found",
+    user,
+  });
+};
 
-const usersPatch = (req,res) => {
+const deleteUserById = async (req, res = response) => {
+  const userAuth = req.user;
+  const user = await User.findByIdAndDelete(userAuth.id);
 
-    res.json({
-        msg: 'patch Api - modules'
-    })
-}
-
+  res.json({
+    success: true,
+    msg: "delete USER - CONTROLLER",
+    user,
+  });
+};
 
 module.exports = {
-    usersGet,
-    usersPut,
-    usersPost,
-    usersDelete,
-    usersPatch
-}
+  getAllUsers,
+  createNewUser,
+  updateUserById,
+  deleteUserById,
+  getUserById,
+};

@@ -1,24 +1,86 @@
-const User = require("../modules/user.modules");
+const { response, request, json } = require('express');
+const bcryptjs = require('bcryptjs');
 
-const bcrypt = require("bcrypt");
+const User = require('../modules/user.modules');
+const { generateJWT }    = require('../helpers/generateWebToken');
+const { googleValidator } = require('../helpers/googleValidator');
 
-const createError = require("http-errors");
-const jwt = require("../lib/jwt.lib");
 
-const login = async (email, textplainPassword) => {
-  const user = await User.findOne({ email });
+const login = async(req = request, res = response ) => {
+    const {email, password} = req.body;
 
-  if (!user) throw createError(401, "No estas autorizado");
+    try{
+        const user = await User.findOne({email});
 
-  const isValidPassword = await bcrypt.compare(
-    textplainPassword,
-    user.password
-  );
+        if(!user){
+            return res.status(400).json({
+                msg: "User/Password incorrect - user ",
+                status: false
+            })
+        }
 
-  if (!isValidPassword) throw createError(401, "No estas autorizado");
+        const validPassword = bcryptjs.compareSync(password, user.password);
+        if(!validPassword){
+            return res.status(400).json({
+                msg: "User/Password incorrect - password",
+                status: false
+            })
+        }
 
-  const token = jwt.sign({ id: user._id });
-  return token;
-};
+        const token = await generateJWT(user.id);
+        
+        res.json({
+            msg: "login successs", 
+            status: true,
+            user,
+            token
+        });
+    }catch(error){
+        return res.status(500).json({
+            msg: "INTERNAL ERROR: Reach out the administrator",
+            status: false
+        });
+    }
+}
 
-module.exports = { login };
+const googleSignIn = async (req,res = response) => {
+    const {id_token} = req.body;
+
+    try {
+        const {name,email,picture} = await googleValidator(id_token); 
+
+        let userGoogleAuth = await User.findOne({email});
+
+        if(!userGoogleAuth){
+            const data = {
+                name,
+                email,
+                password: 'not needed',
+                img: picture,
+                google: true
+            }
+
+            userGoogleAuth = new User(data);
+            await userGoogleAuth.save();
+        }
+
+        const token = await generateJWT( userGoogleAuth.id);
+
+        res.json({
+            userGoogleAuth,
+            token,
+            success: true
+        });
+    } catch(error){
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            msg: 'Invalid Token'
+        })
+    }
+}
+
+module.exports = {
+    login,
+    googleSignIn
+}

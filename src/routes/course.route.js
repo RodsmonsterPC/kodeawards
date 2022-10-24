@@ -75,4 +75,28 @@ router.put("/:id", async (request, response) => {
     });
   }
 });
+
+router.patch("/:id", async (request, response) => {
+  try {
+    const { params } = request;
+    const { body } = request;
+
+    const course = await courseUpdate(params.id, body, {
+      returnDocuemnt: "after",
+    });
+    response.status(201);
+    response.json({
+      succes: true,
+      data: {
+        course,
+      },
+    });
+  } catch (error) {
+    response.status(400);
+    response.json({
+      succes: false,
+      message: error.message,
+    });
+  }
+});
 module.exports = router;

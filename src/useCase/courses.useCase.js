@@ -12,12 +12,12 @@ const allCourses = async (request, response) => {
     courses,
   });
 };
-
+console.log("hola");
 const getCourseId = async (request, response) => {
   const { id } = request.params;
 
   const course = await Course.findById(id);
-  response.json({
+  response.jsoon({
     course,
   });
 };
